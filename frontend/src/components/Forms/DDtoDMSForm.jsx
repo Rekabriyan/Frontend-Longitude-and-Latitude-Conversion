@@ -1,111 +1,84 @@
 import React, { useState } from 'react';
 
-const DMSInputForm = ({ onSubmit }) => {
-  const [latitudeDegree, setLatitudeDegree] = useState('');
-  const [latitudeMinute, setLatitudeMinute] = useState('');
-  const [latitudeSecond, setLatitudeSecond] = useState('');
-  const [longitudeDegree, setLongitudeDegree] = useState('');
-  const [longitudeMinute, setLongitudeMinute] = useState('');
-  const [longitudeSecond, setLongitudeSecond] = useState('');
-  const [dd, setDd] = useState({ lat: 90.000000, long: 33.230000 });
+const DDInputForm = ({ onSubmit }) => {
+  const [latitude, setLatitude] = useState(90.000000);
+  const [longitude, setLongitude] = useState(33.230000);
+  const [dms, setDms] = useState({ latDMS: '', longDMS: '' });
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const latitude =
-      parseFloat(latitudeDegree) +
-      parseFloat(latitudeMinute) / 60 +
-      parseFloat(latitudeSecond) / 3600;
-    const longitude =
-      parseFloat(longitudeDegree) +
-      parseFloat(longitudeMinute) / 60 +
-      parseFloat(longitudeSecond) / 3600;
-    onSubmit({ latitude, longitude });
-    setDd({ lat: latitude.toFixed(6), long: longitude.toFixed(6) });
+    // Konversi dari DD ke DMS
+    const convertToDMS = (dd) => {
+      const degrees = Math.floor(dd);
+      const minutes = Math.floor((dd - degrees) * 60);
+      const seconds = ((dd - degrees - minutes / 60) * 3600).toFixed(2);
+      return `${degrees}° ${minutes}' ${seconds}"`;
+    };
+
+    const latitudeDMS = convertToDMS(latitude);
+    const longitudeDMS = convertToDMS(longitude);
+    onSubmit({ latitudeDMS, longitudeDMS });
+    setDms({ latDMS: latitudeDMS, longDMS: longitudeDMS });
   };
 
   return (
-    <div className="p-4 bg-white-900 text-black rounded-lg shadow-xl">
+    <div className="p-4 bg-gray-900 text-white rounded-lg shadow-xl">
       <form onSubmit={handleSubmit}>
-        <h2 className="text-lg font-semibold text-white-500 mb-4">Convert Coordinate DD to DMS</h2>
+        <h2 className="text-lg font-semibold mb-4">Convert Coordinate DD to DMS</h2>
         <div className="mb-4">
-          <label className="block">Latitude:</label>
-          <div className="flex space-x-2">
-            <input
-              className="flex-1 p-2 bg-white-700 rounded"
-              type="number"
-              value={latitudeDegree}
-              onChange={(e) => setLatitudeDegree(e.target.value)}
-              placeholder="Degrees"
-            />
-            <input
-              className="flex-1 p-2 bg-white-700 rounded"
-              type="number"
-              value={latitudeMinute}
-              onChange={(e) => setLatitudeMinute(e.target.value)}
-              placeholder="Minutes"
-            />
-            <input
-              className="flex-1 p-2 bg-white-700 rounded"
-              type="number"
-              value={latitudeSecond}
-              onChange={(e) => setLatitudeSecond(e.target.value)}
-              placeholder="Seconds"
-            />
-          </div>
+          <label className="block">Latitude (DD):</label>
+          <input
+            className="w-full p-2 bg-gray-700 rounded"
+            type="number"
+            value={latitude}
+            onChange={(e) => setLatitude(e.target.value)}
+            placeholder="Decimal Degrees"
+          />
         </div>
         <div className="mb-4">
-          <label className="block">Longitude:</label>
-          <div className="flex space-x-2">
-            <input
-              className="flex-1 p-2 bg-white-700 rounded"
-              type="number"
-              value={longitudeDegree}
-              onChange={(e) => setLongitudeDegree(e.target.value)}
-              placeholder="Degrees"
-            />
-            <input
-              className="flex-1 p-2 bg-white-700 rounded"
-              type="number"
-              value={longitudeMinute}
-              onChange={(e) => setLongitudeMinute(e.target.value)}
-              placeholder="Minutes"
-            />
-            <input
-              className="flex-1 p-2 bg-white-700 rounded"
-              type="number"
-              value={longitudeSecond}
-              onChange={(e) => setLongitudeSecond(e.target.value)}
-              placeholder="Seconds"
-            />
-          </div>
+          <label className="block">Longitude (DD):</label>
+          <input
+            className="w-full p-2 bg-gray-700 rounded"
+            type="number"
+            value={longitude}
+            onChange={(e) => setLongitude(e.target.value)}
+            placeholder="Decimal Degrees"
+          />
         </div>
         <button
-          className="w-full py-2 text-white bg-green-600 rounded hover:bg-green-700"
+          className="w-full py-2 bg-green-600 rounded hover:bg-green-700"
           type="submit"
         >
           Convert
         </button>
         <div className="mt-4">
-          <label className="block">Converted Latitude:</label>
+          <label className="block">Converted Latitude (DMS):</label>
           <input
-            className="w-full p-2 bg-white-700 rounded"
+            className="w-full p-2 bg-gray-700 rounded"
             type="text"
-            value={`${dd.lat} deg`}
+            value={dms.latDMS}
             readOnly
           />
         </div>
         <div className="mt-2">
-          <label className="block">Converted Longitude:</label>
+          <label className="block">Converted Longitude (DMS):</label>
           <input
-            className="w-full p-2 bg-white-700 rounded"
+            className="w-full p-2 bg-gray-700 rounded"
             type="text"
-            value={`${dd.long} deg`}
+            value={dms.longDMS}
             readOnly
           />
         </div>
+        <button
+          className="w-full py-2 mt-4 bg-green-600 rounded hover:bg-green-700"
+          type="button"
+          onClick={() => console.log('Add to maps functionality to be implemented')}
+        >
+          Add To Maps
+        </button>
       </form>
     </div>
   );
 };
 
-export default DMSInputForm;
+export default DDInputForm;
