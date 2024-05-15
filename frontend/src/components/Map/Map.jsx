@@ -1,8 +1,7 @@
-// src/MapComponent.jsx
 import React, { useRef, useEffect } from 'react';
 import 'ol/ol.css';
-import Map from 'ol/map'; // Import Map
-import View from 'ol/view'; // Import View
+import Map from 'ol/map';
+import View from 'ol/view';
 import TileLayer from 'ol/layer/tile';
 import OSM from 'ol/source/osm';
 
@@ -10,7 +9,6 @@ const MapComponent = () => {
   const mapElement = useRef(null);
 
   useEffect(() => {
-    // Inisialisasi peta hanya sekali ketika komponen dimount
     const map = new Map({
       target: mapElement.current,
       layers: [
@@ -24,21 +22,26 @@ const MapComponent = () => {
       }),
     });
 
-    // Set lebar dan tinggi peta sesuai dengan lebar dan tinggi layar
     const resizeMap = () => {
       map.updateSize();
     };
 
     window.addEventListener('resize', resizeMap);
 
-    // Cleanup
     return () => {
       window.removeEventListener('resize', resizeMap);
-      map.setTarget(null); // Cleanup on unmount
+      map.setTarget(null);
     };
   }, []);
 
-  return <div ref={mapElement} style={{ width: '100%', height: '100vh' }}></div>;
+  return (
+    <div
+      
+      ref={mapElement}
+      className="border-2 border-gray-200 shadow-lg mx-auto my-2 p-2"
+      style={{ width: 'calc(100% - 4rem)', height: 'calc(100vh - 5rem)' }}
+    ></div>
+  );
 };
 
 export default MapComponent;
